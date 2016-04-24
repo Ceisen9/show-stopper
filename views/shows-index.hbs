@@ -1,0 +1,7 @@
+<h2>Your Followed Shows:</h2>
+<h3>{{shows.length}}</h3>
+{{#each shows as |show index|}}
+<h4>
+  <a href="/shows/{{show.name}}">{{show.name}}</a>
+</h4>
+{{/each}}
