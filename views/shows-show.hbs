@@ -9,3 +9,15 @@
 {{else}}
   <h3>That show could not be found</h3>
 {{/if}}
+
+<form action="/shows/{{show.name}}" method="post">
+  <input type="text" name="show[name]" placeholder="Name" value="{{show.name}}"/>
+  {{#each show.episodes as |episode index|}}
+    <input type="text" name="episode[title]" placeholder="Name" value="{{episode.title}}"/>
+  {{/each}}
+  <button type="submit">Edit Name</button>
+</form>
+
+<form action="/shows/{{show.name}}/delete" method="post">
+    <button type="submit">Delete</button>
+</form>

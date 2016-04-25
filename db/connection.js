@@ -2,13 +2,13 @@ var mongoose = require("mongoose");
 
 var EpisodeSchema = new mongoose.Schema(
   {
-    title: {type: String, lowercase: true }
+    title: String,
   }
 );
 
 var ShowSchema = new mongoose.Schema(
   {
-    name: {type: String, lowercase: true },
+    name: String,
     episodes: [EpisodeSchema]
   }
 );

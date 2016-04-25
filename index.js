@@ -20,7 +20,7 @@ app.engine(".hbs", hbs({
 }));
 
 app.get("/", function(req, res){
-  res.render("layout-main");
+  res.render("shows");
 });
 
 app.get("/shows", function(req, res){
@@ -36,6 +36,24 @@ app.get("/shows/:name", function(req, res){
     res.render("shows-show", {
       show: show
     });
+  });
+});
+
+app.post("/shows", function(req, res){
+  Show.create(req.body.show).then(function(show){
+    res.redirect("/shows/" + show.name);
+  });
+});
+
+app.post("/shows/:name/delete", function(req, res){
+  Show.findOneAndRemove({name: req.params.name}).then(function(){
+    res.redirect("/shows")
+  });
+});
+
+app.post("/shows/:name", function(req, res){
+  Show.findOneAndUpdate({name: req.params.name}, req.body.show, {new: true}).then(function(show){
+    res.redirect("/shows/" + show.name);
   });
 });
 
