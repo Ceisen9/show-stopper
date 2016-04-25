@@ -10,7 +10,7 @@ var Episode = mongoose.model("Episode");
 
 app.set("port", process.env.PORT || 3001);
 app.use("/assets", express.static("public"));
-app.use(parser.urlencoded({extended: true}));
+app.use(parser.json({extended: true}));
 app.set("view engine", "hbs");
 app.engine(".hbs", hbs({
   extname: ".hbs",
@@ -19,42 +19,32 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-app.get("/", function(req, res){
-  res.render("shows");
-});
-
-app.get("/shows", function(req, res){
-  Show.find({}).then(function(shows){
-    res.render("shows-index", {
-      shows: shows
-    });
+app.get("/api/shows", function(req, res){
+  Show.find({}).lean().exec().then(function(shows){
+    res.json(shows);
   });
 });
 
-app.get("/shows/:name", function(req, res){
+app.get("/api/shows/:name", function(req, res){
   Show.findOne({name: req.params.name}).then(function(show){
-    res.render("shows-show", {
-      show: show
-    });
+    res.json(show);
   });
 });
 
-app.post("/shows", function(req, res){
-  Show.create(req.body.show).then(function(show){
-    res.redirect("/shows/" + show.name);
-  });
-});
-
-app.post("/shows/:name/delete", function(req, res){
+app.delete("/api/shows/:name", function(req, res){
   Show.findOneAndRemove({name: req.params.name}).then(function(){
-    res.redirect("/shows")
+    res.json({success: true});
   });
 });
 
-app.post("/shows/:name", function(req, res){
+app.put("/api/shows/:name", function(req, res){
   Show.findOneAndUpdate({name: req.params.name}, req.body.show, {new: true}).then(function(show){
-    res.redirect("/shows/" + show.name);
+    res.json(show);
   });
+});
+
+app.get("/*", function(req, res){
+  res.render("shows");
 });
 
 app.listen(app.get("port"), function(req, res){

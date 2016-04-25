@@ -1,0 +1,25 @@
+<h2> This is the Show Page</h2>
+<div data-ng-if="!showVM.show">
+  <h2>That show couldn't be found!</h2>
+</div>
+
+<div data-ng-if="showVM.show">
+  <h2>{{showVM.show.name}}</h2>
+  <div data-ng-repeat="episode in showVM.show.episodes">
+    <p>{{episode.title}}</p>
+  </div>
+
+  <div>
+    <input type="string" placeholder="Name" data-ng-model="showVM.show.name" />
+    <div data-ng-repeat="episode in showVM.show.episodes">
+      <input type="string" placeholder="Title" data-ng-model="episode.title"/>
+    </div>
+    <button data-ng-click="showVM.update()">Edit this Show</button>
+    <button data-ng-click="showVM.delete()">Stop Following this Show</button>
+  </div>
+
+  <div>
+    <button>Add an Episode</button>
+  </div>
+
+</div>
