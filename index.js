@@ -25,6 +25,10 @@ app.get("/api/shows", function(req, res){
   });
 });
 
+app.post("/api/shows", function(req, res){
+  res.json(req.body);
+});
+
 app.get("/api/shows/:name", function(req, res){
   Show.findOne({name: req.params.name}).then(function(show){
     res.json(show);

@@ -18,6 +18,7 @@
   ])
   .controller("showIndexCtrl", [
     "Show",
+    "$state",
     showIndexCtrl
   ])
   .controller("showShowCtrl", [
@@ -64,9 +65,10 @@
     return Show;
   }
 
-  function showIndexCtrl(Show){
+  function showIndexCtrl(Show, $state){
     var vm = this;
     vm.shows = Show.all;
+
   }
 
   function showShowCtrl(Show, $stateParams, $window){
@@ -75,15 +77,27 @@
       vm.show = show;
     });
     vm.update = function(){
-      Show.update({name: vm.show.name}, {show: vm.show}, function() {
-        console.log("updated");
+      Show.update({name: vm.show.name}, {show: vm.show}, function(response) {
+        console.log(response);
       });
     }
     vm.delete = function(){
-      console.log("something");
       Show.remove({name: vm.show.name}, function(){
         $window.location.replace("/shows");
       });
+    }
+    vm.addEpisode = function(){
+      if(vm.show.episodes.includes(vm.newEpisode)){
+        console.log("nope, duplicate")
+      } else{
+        vm.show.episodes.push(vm.newEpisode);
+        vm.newEpisode = "";
+        vm.update();
+      }
+      vm.removeEpisode = function($index){
+        vm.show.episodes.splice($index, 1);
+        vm.update();
+      }
     }
   }
 })();

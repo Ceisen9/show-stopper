@@ -19,7 +19,9 @@
   </div>
 
   <div>
-    <button>Add an Episode</button>
+    <input type="string" placeholder="Episode Title" data-ng-model="showVM.newEpisode"/>
+    <button data-ng-click="showVM.addEpisode()">Add an Episode</button>
+    <button data-ng-click="showVM.removeEpisode($index)">Delete Episode</button>
   </div>
 
 </div>
