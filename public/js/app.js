@@ -19,6 +19,7 @@
   .controller("showIndexCtrl", [
     "Show",
     "$state",
+    "$window",
     showIndexCtrl
   ])
   .controller("showShowCtrl", [
@@ -65,10 +66,18 @@
     return Show;
   }
 
-  function showIndexCtrl(Show, $state){
+  function showIndexCtrl(Show, $state, $window){
     var vm = this;
     vm.shows = Show.all;
-
+    // vm.addShow = new Show({"name": vm.newShow});
+    vm.addShow = function(){
+      // console.log(vm.newShow);
+      // var hey = {"name": vm.newShow};
+      // console.log(hey);
+      Show.save({"name": vm.newShow}).$promise.then(function(){
+        $window.location.replace("/shows/" + vm.newShow);
+      });
+    };
   }
 
   function showShowCtrl(Show, $stateParams, $window){
@@ -77,7 +86,7 @@
       vm.show = show;
     });
     vm.update = function(){
-      Show.update({name: vm.show.name}, {show: vm.show}, function(response) {
+      Show.update({name: $stateParams.name}, {show: vm.show}, function(response) {
         console.log(response);
       });
     }
@@ -87,17 +96,14 @@
       });
     }
     vm.addEpisode = function(){
-      if(vm.show.episodes.includes(vm.newEpisode)){
-        console.log("nope, duplicate")
-      } else{
-        vm.show.episodes.push(vm.newEpisode);
-        vm.newEpisode = "";
-        vm.update();
-      }
-      vm.removeEpisode = function($index){
-        vm.show.episodes.splice($index, 1);
-        vm.update();
-      }
+      console.log(vm.newEpisode);
+      vm.show.episodes.push({"title": vm.newEpisode});
+      vm.update();
+      vm.newEpisode = "";
+    }
+    vm.removeEpisode = function($index){
+      vm.show.episodes.splice($index, 1);
+      vm.update();
     }
   }
 })();

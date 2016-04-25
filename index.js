@@ -26,7 +26,13 @@ app.get("/api/shows", function(req, res){
 });
 
 app.post("/api/shows", function(req, res){
-  res.json(req.body);
+  console.log("first");
+  console.log(req.body);
+  // console.log("second");
+  // console.log(req.body.show);
+  Show.create(req.body).then(function(show){
+    res.json(show);
+  });
 });
 
 app.get("/api/shows/:name", function(req, res){
