@@ -20,6 +20,8 @@
     "Show",
     "$state",
     "$window",
+    "$http",
+    "$scope",
     showIndexCtrl
   ])
   .controller("showShowCtrl", [
@@ -66,19 +68,42 @@
     return Show;
   }
 
-  function showIndexCtrl(Show, $state, $window){
+  function showIndexCtrl(Show, $state, $window, $http, $scope){
     var vm = this;
     vm.shows = Show.all;
-    // vm.addShow = new Show({"name": vm.newShow});
     vm.addShow = function(){
-      // console.log(vm.newShow);
-      // var hey = {"name": vm.newShow};
-      // console.log(hey);
       Show.save({"name": vm.newShow}).$promise.then(function(){
         $window.location.replace("/shows/" + vm.newShow);
       });
-    };
+    }
+
+    // $scope.select = function(){
+    //   this.setSelectionRange(0, this.value.length);
+    // }
+
+    vm.search = function(){
+      $scope.$watch('searchName', function() {
+        // $http.get("http://www.omdbapi.com/?t=" + $scope.searchName + "&tomatoes=true&plot=full")
+        // .then(function(response){ $scope.details = response.data; });
+        $http.get("http://www.omdbapi.com/?s=" + $scope.searchName)
+        .then(function(response){
+          console.log(response.data.Search);
+          // $scope.related = response.data;
+        });
+      })
+      // vm.update = function(show){
+      //   $scope.search = show.Title;
+      // }
+    }
   }
+  //
+  // function fetch($scope, $http){
+  //     $http.get("http://www.omdbapi.com/?t=" + $scope.search + "&tomatoes=true&plot=full")
+  //     .then(function(response){ $scope.details = response.data; });
+  //
+  //     $http.get("http://www.omdbapi.com/?s=" + $scope.search)
+  //     .then(function(response){ $scope.related = response.data; });
+  //   }
 
   function showShowCtrl(Show, $stateParams, $window){
     var vm = this;
@@ -96,7 +121,6 @@
       });
     }
     vm.addEpisode = function(){
-      console.log(vm.newEpisode);
       vm.show.episodes.push({"title": vm.newEpisode});
       vm.update();
       vm.newEpisode = "";
