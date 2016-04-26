@@ -80,15 +80,22 @@
     // $scope.select = function(){
     //   this.setSelectionRange(0, this.value.length);
     // }
+    $scope.searchName = "Sherlock Holmes";
 
     vm.search = function(){
       $scope.$watch('searchName', function() {
-        // $http.get("http://www.omdbapi.com/?t=" + $scope.searchName + "&tomatoes=true&plot=full")
-        // .then(function(response){ $scope.details = response.data; });
+        console.log("clicked");
+
+        $http.get("http://www.omdbapi.com/?t=" + $scope.searchName + "&tomatoes=true&plot=full&type=series")
+        .then(function(response){
+          console.log(response.data);
+          $scope.details = response.data;
+         });
+
         $http.get("http://www.omdbapi.com/?s=" + $scope.searchName)
         .then(function(response){
-          console.log(response.data.Search);
-          // $scope.related = response.data;
+          console.log(response.data);
+          $scope.related = response.data;
         });
       })
       // vm.update = function(show){
