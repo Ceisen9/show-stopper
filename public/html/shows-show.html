@@ -16,7 +16,6 @@
       <input type="string" placeholder="Title" data-ng-model="episode.title"/>
       <button data-ng-click="showVM.removeEpisode($index)">Delete Episode</button>
     </div>
-    <button data-ng-click="showVM.update()">Edit this Show</button>
     <button data-ng-click="showVM.delete()">Stop Following this Show</button>
   </div>
 
@@ -24,5 +23,7 @@
     <input type="string" placeholder="Episode Title" data-ng-model="showVM.newEpisode"/>
     <button data-ng-click="showVM.addEpisode()">Add an Episode</button>
   </div>
+
+  <div>hello this is a new episode called {{showVM.newEpisode}}</div>
 
 </div>

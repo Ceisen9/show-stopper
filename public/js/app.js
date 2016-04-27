@@ -16,10 +16,6 @@
     "$resource",
     User
   ])
-  .factory("Show", [
-    "$resource",
-    Show
-  ])
   .controller("profileCtrl", [
     "User",
     "$state",
@@ -27,7 +23,7 @@
     profileCtrl
   ])
   .controller("showIndexCtrl", [
-    "Show",
+    "User",
     "$state",
     "$window",
     "$http",
@@ -35,9 +31,10 @@
     showIndexCtrl
   ])
   .controller("showShowCtrl", [
-    "Show",
+    "User",
     "$stateParams",
     "$window",
+    "$scope",
     showShowCtrl
   ]);
 
@@ -71,50 +68,48 @@
 
 
   function User($resource){
-    var User = $resource("/api/users", {}, {
-      'query': {method: 'GET', isArray: false },
-      update: {method: "PUT"}
+    var vm = this
+    var User = $resource("/api/shows", {}, {
+      update: {method: "PUT"},
+      'query': {method: 'GET', isArray: false }
+
     });
 
     var user = User.query();
     return user
   }
 
-  function profileCtrl(User, $state, $scope){
-    $scope.user = User;
+  function profileCtrl(User, $state){
+    var vm = this;
+    vm.user = User;
   };
 
-  function Show($resource){
-    var Show = $resource("/api/shows/:name", {}, {
-      update: {method: "PUT"}
-    });
-    Show.all = Show.query();
-    Show.find = function(property, value, callback){
-      Show.all.$promise.then(function(show){
-        Show.all.forEach(function(show){
-          if(show[property]==value) callback(show);
-        });
-      });
-    }
-    return Show;
-  }
-
-
-  function showIndexCtrl(Show, $state, $window, $http, $scope){
+  function showIndexCtrl(User, $state, $window, $http, $scope){
     var vm = this;
-    vm.shows = Show.all;
+
+    vm.user = User.$promise.then(function(){
+      vm.shows = User.favoriteShows;
+
+    });
+
+    vm.newShow = "";
+
     vm.addShow = function(){
-      Show.save({"name": vm.newShow}).$promise.then(function(){
-        $window.location.replace("/shows/" + vm.newShow);
+      vm.shows.push({"name": vm.newShow});
+      User.$update().then(function(){
+        vm.newShow = "";
+        // $window.location.replace("/#/shows/" + vm.newShow);
       });
     }
+
+
 
     // $scope.select = function(){
     //   this.setSelectionRange(0, this.value.length);
     // }
     $scope.searchName = "Sherlock Holmes";
 
-    vm.search = function(){
+    $scope.search = function(){
       $scope.$watch('searchName', function() {
         console.log("clicked");
 
@@ -144,29 +139,33 @@
   //     .then(function(response){ $scope.related = response.data; });
   //   }
 
-  function showShowCtrl(Show, $stateParams, $window){
+  function showShowCtrl(User, $stateParams, $window, $scope){
     var vm = this;
-    Show.find("name", $stateParams.name, function(show){
-      vm.show = show;
-    });
-    vm.update = function(){
-      Show.update({name: $stateParams.name}, {show: vm.show}, function(response) {
-        console.log(response);
-      });
+
+    function findShow(show){
+      return show.name === $stateParams.name;
+    };
+    vm.show = User.favoriteShows.find(findShow);
+
+
+    var showIndex = User.favoriteShows.findIndex(findShow);
+
+    $scope.delete = function(){
+      User.favoriteShows.splice(showIndex, 1);
+      User.$update();
+      $window.location.replace("/#/shows");
     }
-    vm.delete = function(){
-      Show.remove({name: vm.show.name}, function(){
-        $window.location.replace("/shows");
-      });
-    }
+    vm.newEpisode = "";
     vm.addEpisode = function(){
       vm.show.episodes.push({"title": vm.newEpisode});
-      vm.update();
+      console.log(vm.show.episodes);
+      User.$update();
       vm.newEpisode = "";
+
     }
     vm.removeEpisode = function($index){
       vm.show.episodes.splice($index, 1);
-      vm.update();
+      User.$update();
     }
   }
 })();
