@@ -12,9 +12,19 @@
     "$urlRouterProvider",
     Router
   ])
+  .factory("User", [
+    "$resource",
+    User
+  ])
   .factory("Show", [
     "$resource",
     Show
+  ])
+  .controller("profileCtrl", [
+    "User",
+    "$state",
+    "$scope",
+    profileCtrl
   ])
   .controller("showIndexCtrl", [
     "Show",
@@ -32,11 +42,17 @@
   ]);
 
   function Router($stateProvider, $locationProvider, $urlRouterProvider){
-    $locationProvider.html5Mode(true);
+    // $locationProvider.html5Mode(true);
     $stateProvider
     .state("welcome", {
       url: "/",
-      templateUrl: "/assets/html/shows-welcome.html"
+      templateUrl: "/assets/html/welcome.html"
+    })
+    .state("profile", {
+      url: "/profile",
+      templateUrl: "/assets/html/profile.html",
+      controller: "profileCtrl",
+      controllerAs: "profileVM"
     })
     .state("index", {
       url: "/shows",
@@ -50,8 +66,23 @@
       controller: "showShowCtrl",
       controllerAs: "showVM"
     });
-    $urlRouterProvider.otherwise("/");
+    // $urlRouterProvider.otherwise("/");
   }
+
+
+  function User($resource){
+    var User = $resource("/api/users", {}, {
+      'query': {method: 'GET', isArray: false },
+      update: {method: "PUT"}
+    });
+
+    var user = User.query();
+    return user
+  }
+
+  function profileCtrl(User, $state, $scope){
+    $scope.user = User;
+  };
 
   function Show($resource){
     var Show = $resource("/api/shows/:name", {}, {
@@ -67,6 +98,7 @@
     }
     return Show;
   }
+
 
   function showIndexCtrl(Show, $state, $window, $http, $scope){
     var vm = this;
