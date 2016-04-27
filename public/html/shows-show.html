@@ -1,3 +1,4 @@
+<h1><a href="/#/shows">Show Stoppr</a></h1>
 <h2> This is the Show Page</h2>
 <div data-ng-if="!showVM.show">
   <h2>That show couldn't be found!</h2>
@@ -13,6 +14,7 @@
     <input type="string" placeholder="Name" data-ng-model="showVM.show.name" />
     <div data-ng-repeat="episode in showVM.show.episodes">
       <input type="string" placeholder="Title" data-ng-model="episode.title"/>
+      <button data-ng-click="showVM.removeEpisode($index)">Delete Episode</button>
     </div>
     <button data-ng-click="showVM.update()">Edit this Show</button>
     <button data-ng-click="showVM.delete()">Stop Following this Show</button>
@@ -21,7 +23,6 @@
   <div>
     <input type="string" placeholder="Episode Title" data-ng-model="showVM.newEpisode"/>
     <button data-ng-click="showVM.addEpisode()">Add an Episode</button>
-    <button data-ng-click="showVM.removeEpisode($index)">Delete Episode</button>
   </div>
 
 </div>

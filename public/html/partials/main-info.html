@@ -1,0 +1,41 @@
+<!-- <h1>hello</h1> -->
+<div ng-if="!details">
+  Loading results...
+</div>
+
+<div ng-if="details.Response==='True'">
+  <img ng-src="{{ details.Poster=='N/A' ? 'http://placehold.it/150x220&text=N/A' : details.Poster }}" class="thumbnail animated flip movie-poster">
+
+  <span class="span-outer">
+    <a href="http://imdb.com/title/{{ details.imdbID }}" target="_blank">{{ details.Title }}</a>
+  </span>, {{ details.Year }}
+
+  <p><strong>Released on:</strong> {{ details.Released }} ({{ details.Runtime }})</p>
+
+  <p>{{ details.Plot }}</p>
+
+  <p class="outer-p">
+    <div class="inner-p">
+      <span class="label label-primary">Directors :</span> {{ details.Director }}
+    </div>
+    <div class="inner-p">
+      <span class="label label-primary">Actors :</span> {{ details.Actors }}
+    </div>
+    <div class="inner-p">
+      <span class="label label-primary">Genre :</span> {{ details.Genre }}
+    </div>
+  </p>
+
+  <p class="outer-p-2">Ratings:<br>
+    <strong>IMDb Rating</strong>: <span class="label label-success">{{ details.imdbRating }}</span><br>
+    <strong>Rotten Tomatoes</strong>: <span class="label label-success">{{ details.tomatoRating }}</span>
+  </p>
+
+  <p class="outer-p-3">
+    <a href="https://www.youtube.com/results?search_query={{ details.Title }}" target="_blank" class="btn btn-default btn-xs btn-info">Watch Trailers!</a>
+  </p>
+</div>
+
+<div ng-if="details.Response==='False'">
+  No results found.
+</div>

@@ -12,13 +12,26 @@
     "$urlRouterProvider",
     Router
   ])
+  .factory("User", [
+    "$resource",
+    User
+  ])
   .factory("Show", [
     "$resource",
     Show
   ])
+  .controller("profileCtrl", [
+    "User",
+    "$state",
+    "$scope",
+    profileCtrl
+  ])
   .controller("showIndexCtrl", [
     "Show",
     "$state",
+    "$window",
+    "$http",
+    "$scope",
     showIndexCtrl
   ])
   .controller("showShowCtrl", [
@@ -29,11 +42,17 @@
   ]);
 
   function Router($stateProvider, $locationProvider, $urlRouterProvider){
-    $locationProvider.html5Mode(true);
+    // $locationProvider.html5Mode(true);
     $stateProvider
     .state("welcome", {
       url: "/",
-      templateUrl: "/assets/html/shows-welcome.html"
+      templateUrl: "/assets/html/welcome.html"
+    })
+    .state("profile", {
+      url: "/profile",
+      templateUrl: "/assets/html/profile.html",
+      controller: "profileCtrl",
+      controllerAs: "profileVM"
     })
     .state("index", {
       url: "/shows",
@@ -47,8 +66,23 @@
       controller: "showShowCtrl",
       controllerAs: "showVM"
     });
-    $urlRouterProvider.otherwise("/");
+    // $urlRouterProvider.otherwise("/");
   }
+
+
+  function User($resource){
+    var User = $resource("/api/users", {}, {
+      'query': {method: 'GET', isArray: false },
+      update: {method: "PUT"}
+    });
+
+    var user = User.query();
+    return user
+  }
+
+  function profileCtrl(User, $state, $scope){
+    $scope.user = User;
+  };
 
   function Show($resource){
     var Show = $resource("/api/shows/:name", {}, {
@@ -65,11 +99,50 @@
     return Show;
   }
 
-  function showIndexCtrl(Show, $state){
+
+  function showIndexCtrl(Show, $state, $window, $http, $scope){
     var vm = this;
     vm.shows = Show.all;
+    vm.addShow = function(){
+      Show.save({"name": vm.newShow}).$promise.then(function(){
+        $window.location.replace("/shows/" + vm.newShow);
+      });
+    }
 
+    // $scope.select = function(){
+    //   this.setSelectionRange(0, this.value.length);
+    // }
+    $scope.searchName = "Sherlock Holmes";
+
+    vm.search = function(){
+      $scope.$watch('searchName', function() {
+        console.log("clicked");
+
+        $http.get("http://www.omdbapi.com/?t=" + $scope.searchName + "&tomatoes=true&plot=full&type=series")
+        .then(function(response){
+          console.log(response.data);
+          $scope.details = response.data;
+         });
+
+        $http.get("http://www.omdbapi.com/?s=" + $scope.searchName)
+        .then(function(response){
+          console.log(response.data);
+          $scope.related = response.data;
+        });
+      })
+      // vm.update = function(show){
+      //   $scope.search = show.Title;
+      // }
+    }
   }
+  //
+  // function fetch($scope, $http){
+  //     $http.get("http://www.omdbapi.com/?t=" + $scope.search + "&tomatoes=true&plot=full")
+  //     .then(function(response){ $scope.details = response.data; });
+  //
+  //     $http.get("http://www.omdbapi.com/?s=" + $scope.search)
+  //     .then(function(response){ $scope.related = response.data; });
+  //   }
 
   function showShowCtrl(Show, $stateParams, $window){
     var vm = this;
@@ -77,7 +150,7 @@
       vm.show = show;
     });
     vm.update = function(){
-      Show.update({name: vm.show.name}, {show: vm.show}, function(response) {
+      Show.update({name: $stateParams.name}, {show: vm.show}, function(response) {
         console.log(response);
       });
     }
@@ -87,17 +160,13 @@
       });
     }
     vm.addEpisode = function(){
-      if(vm.show.episodes.includes(vm.newEpisode)){
-        console.log("nope, duplicate")
-      } else{
-        vm.show.episodes.push(vm.newEpisode);
-        vm.newEpisode = "";
-        vm.update();
-      }
-      vm.removeEpisode = function($index){
-        vm.show.episodes.splice($index, 1);
-        vm.update();
-      }
+      vm.show.episodes.push({"title": vm.newEpisode});
+      vm.update();
+      vm.newEpisode = "";
+    }
+    vm.removeEpisode = function($index){
+      vm.show.episodes.splice($index, 1);
+      vm.update();
     }
   }
 })();

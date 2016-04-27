@@ -1,11 +1,31 @@
+<h1><a href="/#/shows">Show Stoppr</a></h1>
+<h2><a href="/#/profile">Profile</a></h2>
 <h2> This is the Index Page</h2>
 <h2>Your Followed Shows:</h2>
 <h3>You are following {{indexVM.shows.length}} shows</h3>
 <h4 data-ng-repeat="show in indexVM.shows">
-  <a href="/shows/{{show.name}}">{{show.name}}</a>
+  <a href="/#/shows/{{show.name}}">{{show.name}}</a>
 </h4>
 
-<!-- <form action="/shows" method="post">
-  <input type="text" name="show[name]" placeholder="Name"/>
-  <button type="submit">Submit</button>
-</form> -->
+<div>
+  <input type="string" placeholder="Name of Show" data-ng-model="indexVM.newShow"/>
+  <button data-ng-click="indexVM.addShow()">Add a Show</button>
+</div>
+
+<!-- <div>
+  <input type="string" placeholder="Search for a Title" data-ng-model="indexVM.searchKeyword"/>
+  <button data-ng-click="indexVM.search()">Add a Show</button>
+</div> -->
+
+<div class="container-fluid outerdiv">
+
+  <div class="animated zoomInRight">
+    <div class="input-group search-bar">
+       <input type="text" ng-model="searchName" ng-model-options="{ debounce: 800 }" class="form-control" placeholder="Enter full name of Movie or Show" autofocus />
+       <span class="input-group-addon bar-style" data-ng-click="indexVM.search()"><i class="glyphicon glyphicon-search"></i></span>
+    </div>
+
+    <div id="main-info" ng-include="'assets/html/partials/main-info.html'" class="col-md-8"></div>
+    <div id="related-results" ng-include="'assets/html/partials/related-results.html'" class="col-md-4 animated bounce related-results"></div>
+  </div>
+</div>
