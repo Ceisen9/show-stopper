@@ -34,7 +34,10 @@
     "User",
     "$stateParams",
     "$window",
+    "$http",
     "$scope",
+    "$state",
+    "$resource",
     showShowCtrl
   ]);
 
@@ -67,12 +70,11 @@
   }
 
 
+  //User factory
   function User($resource){
     var User = $resource("/api/shows", {}, {
       update: {method: "PUT"},
-      'query': {method: 'GET', isArray: false }
     });
-
     var user = User.get();
     return user
   }
@@ -90,20 +92,33 @@
 
     });
 
-    vm.newShow = "";
-
     vm.addShow = function(){
-      vm.shows.push({"name": vm.newShow});
+
+      vm.shows.push({
+        "name": $scope.details.name,
+         api_id: $scope.details.id,
+          details: {
+            image: $scope.details.image.medium,
+            url: $scope.details.url,
+            premiered: $scope.details.premiered,
+            runtime: $scope.details.runtime,
+            network: $scope.details.network.name,
+            schedule: $scope.details.schedule.days.join(", "),
+            genres: $scope.details.genres.join(", "),
+            rating: $scope.details.rating.average
+          }
+        });
       User.$update().then(function(){
-        vm.newShow = "";
-        // $window.location.replace("/#/shows/" + vm.newShow);
+        // trigger a new state change
+        // $state.go("index", {}, {reload: true});
+        $window.location.replace("/#/shows/" + $scope.details.name);
       });
     }
     $scope.$watch('search', function() {
       fetch();
     });
 
-    $scope.search = "";
+    $scope.search = "Game of Thrones";
 
     function fetch(){
       $http.get("http://api.tvmaze.com/singlesearch/shows?q=" + $scope.search)
@@ -117,46 +132,55 @@
       $http.get("http://api.tvmaze.com/search/shows?q=" + $scope.search)
       .then(function(response){
         $scope.related = response.data; });
-
     }
 
     $scope.update = function(show){
       $scope.search = show.name;
     };
 
-
-
   }
 
-
-
-  function showShowCtrl(User, $stateParams, $window, $scope){
+  function showShowCtrl(User, $stateParams, $window, $scope, $state, $http, $resource){
     var vm = this;
+
+    var Episodes = $resource("http://api.tvmaze.com/shows/:id/episodes", {}, {
+      get: {isArray: true },
+    });
 
     function findShow(show){
       return show.name === $stateParams.name;
     };
     vm.show = User.favoriteShows.find(findShow);
 
+    $scope.episodes  = Episodes.get({id: vm.show.api_id});
+    console.log($scope.episodes);
 
     var showIndex = User.favoriteShows.findIndex(findShow);
 
     vm.delete = function(){
       User.favoriteShows.splice(showIndex, 1);
-      User.$update();
+      User.$update().then(function(){
+        // trigger a new state change
+        $state.go("show", {}, {reload: true});
+      });
       $window.location.replace("/#/shows");
     }
     vm.newEpisode = "";
     vm.addEpisode = function(){
       vm.show.episodes.push({"title": vm.newEpisode});
-      console.log(vm.show.episodes);
-      User.$update();
-      vm.newEpisode = "";
+      User.$update().then(function(user){
+        // trigger a new state change
+        $state.go("show", {}, {reload: true});
+        vm.newEpisode = "";
+      });
 
     }
     vm.removeEpisode = function($index){
       vm.show.episodes.splice($index, 1);
-      User.$update();
+      User.$update().then(function(user){
+        // trigger a new state change
+        $state.go("show", {}, {reload: true});
+      });
     }
   }
 })();

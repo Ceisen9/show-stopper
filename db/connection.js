@@ -10,6 +10,17 @@ var EpisodeSchema = new mongoose.Schema(
 var ShowSchema = new mongoose.Schema(
   {
     name: String,
+    api_id: Number,
+    details: {
+      image: String,
+      url: String,
+      premiered: String,
+      runtime: Number,
+      network: String,
+      schedule: String,
+      genres: String,
+      rating: Number
+    },
     episodes: [EpisodeSchema]
   }
 );

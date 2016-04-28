@@ -7,7 +7,7 @@
   <img ng-src="{{ details.image.medium =='N/A' ? 'http://placehold.it/150x220&text=N/A' : details.image.medium }}" class="thumbnail animated flip movie-poster">
 
   <span class="span-outer">
-    <a href="details.url" target="_blank">{{ details.name }}</a>
+    <a href="{{details.url}}" target="_blank">{{ details.name }}</a>
   </span>
 
   <p><strong>Released on:</strong> {{ details.premiered }} ({{ details.runtime }} min)</p>
@@ -27,11 +27,11 @@
   </p>
 
   <p class="outer-p-2">Ratings:<br>
-    <strong>IMDb Rating</strong>: <span class="label label-success">{{ details.rating.average }}</span><br>
+    <strong>TV Maze Rating</strong>: <span class="label label-success">{{ details.rating.average }}</span><br>
 
   </p>
 
   <p class="outer-p-3">
-    <a href="https://www.youtube.com/results?search_query={{ details.name }}" target="_blank" class="btn btn-default btn-xs btn-info">Watch Trailers!</a>
+    <a href="https://www.youtube.com/results?search_query={{ details.name }}" target="_blank" class="btn btn-default btn-xs btn-info">YouTube!</a>
   </p>
 </div>

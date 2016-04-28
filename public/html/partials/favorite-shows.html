@@ -1,0 +1,42 @@
+<div data-ng-repeat="show in indexVM.shows">
+  <div ng-if="!show.details">
+    Loading shows...
+  </div>
+
+  <div ng-if="show.details">
+    <img ng-src="{{ show.details.image =='N/A' ? 'http://placehold.it/150x220&text=N/A' : show.details.image }}" class="thumbnail animated flip movie-poster">
+
+    <span class="span-outer">
+      <a href="{{show.details.url}}" target="_blank">{{ show.name }}</a>
+    </span>
+
+    <span class="span-outer">
+      <a href="/#/shows/{{show.name}}">Go to Watched Episodes</a>
+    </span>
+
+    <p><strong>Released on:</strong> {{ show.details.premiered }} ({{ show.details.runtime }} min)</p>
+
+    <p class="summary"></p>
+
+    <p class="outer-p">
+      <div class="inner-p">
+        <span class="label label-primary">Network :</span> {{ show.details.network }}
+      </div>
+      <div class="inner-p">
+        <span class="label label-primary">Shows on :</span> {{ show.details.schedule.join(", ") }}
+      </div>
+      <div class="inner-p">
+        <span class="label label-primary">Genre :</span> {{ show.details.genres.join(", ") }}
+      </div>
+    </p>
+
+    <p class="outer-p-2">Ratings:<br>
+      <strong>TV Maze Rating</strong>: <span class="label label-success">{{ show.details.rating }}</span><br>
+
+    </p>
+
+    <p class="outer-p-3">
+      <a href="https://www.youtube.com/results?search_query={{ show.name }}" target="_blank" class="btn btn-default btn-xs btn-info">YouTube</a>
+    </p>
+  </div>
+</div>

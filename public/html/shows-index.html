@@ -1,16 +1,7 @@
 <h1><a href="/#/shows">Show Stoppr</a></h1>
 <h2><a href="/#/profile">Profile</a></h2>
-<h2> This is the Index Page</h2>
-<h2>Your Followed Shows:</h2>
-<h3>You are following {{indexVM.shows.length}} shows</h3>
-<h4 data-ng-repeat="show in indexVM.shows">
-  <a href="/#/shows/{{show.name}}">{{show.name}}</a>
-</h4>
 
-<div>
-  <input type="string" placeholder="Name of Show" data-ng-model="indexVM.newShow"/>
-  <button data-ng-click="indexVM.addShow()">Add a Show</button>
-</div>
+
 
 
 <div class="container-fluid outerdiv">
@@ -24,4 +15,15 @@
     <div id="main-info" ng-include="'assets/html/partials/main-info.html'" class="col-md-8"></div>
     <div id="related-results" ng-include="'assets/html/partials/related-results.html'" class="col-md-4 animated bounce related-results"></div>
   </div>
+</div>
+
+<div>
+  <!-- <input type="string" placeholder="Name of Show" data-ng-model="indexVM.newShow"/> -->
+  <button data-ng-click="indexVM.addShow()">Add a Show</button>
+</div>
+
+<h2>Your Followed Shows:</h2>
+<h3>You are following {{indexVM.shows.length}} shows</h3>
+<div>
+  <div id="main-info" ng-include="'assets/html/partials/favorite-shows.html'" class="col-md-8"></div>
 </div>
