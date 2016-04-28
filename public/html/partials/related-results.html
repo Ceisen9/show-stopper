@@ -2,8 +2,8 @@
   Related Results:<hr>
 
   <ul class="rel-results">
-    <li ng-repeat="movie in related.Search">
-      <a href="#" id="{{ $index + 1 }}" ng-click="update(movie)">{{ movie.Title }}</a>, {{ movie.Year }}
+    <li ng-repeat="show in related">
+      <a href="/#/shows" id="{{ $index + 1 }}" ng-click="update(show.show)">{{ show.show.name}}</a>, {{ show.show.premiered }}
     </li>
   </ul>
 </div>

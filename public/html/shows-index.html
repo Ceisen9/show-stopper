@@ -12,17 +12,13 @@
   <button data-ng-click="indexVM.addShow()">Add a Show</button>
 </div>
 
-<!-- <div>
-  <input type="string" placeholder="Search for a Title" data-ng-model="indexVM.searchKeyword"/>
-  <button data-ng-click="indexVM.search()">Add a Show</button>
-</div> -->
 
 <div class="container-fluid outerdiv">
 
   <div class="animated zoomInRight">
     <div class="input-group search-bar">
-       <input type="text" ng-model="searchName" ng-model-options="{ debounce: 800 }" class="form-control" placeholder="Enter full name of Movie or Show" autofocus />
-       <span class="input-group-addon bar-style" data-ng-click="indexVM.search()"><i class="glyphicon glyphicon-search"></i></span>
+        <input type="text" ng-model="search" ng-model-options="{ debounce: 800 }" class="form-control" placeholder="Enter full show name" autofocus />
+       <span class="input-group-addon bar-style" data-ng-click="vm.fetch()"><i class="glyphicon glyphicon-search"></i></span>
     </div>
 
     <div id="main-info" ng-include="'assets/html/partials/main-info.html'" class="col-md-8"></div>

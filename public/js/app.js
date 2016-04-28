@@ -68,14 +68,12 @@
 
 
   function User($resource){
-    var vm = this
     var User = $resource("/api/shows", {}, {
       update: {method: "PUT"},
       'query': {method: 'GET', isArray: false }
-
     });
 
-    var user = User.query();
+    var user = User.get();
     return user
   }
 
@@ -101,43 +99,36 @@
         // $window.location.replace("/#/shows/" + vm.newShow);
       });
     }
+    $scope.$watch('search', function() {
+      fetch();
+    });
 
+    $scope.search = "";
 
+    function fetch(){
+      $http.get("http://api.tvmaze.com/singlesearch/shows?q=" + $scope.search)
+      .then(function(response){
+        $scope.details = response.data;
+        $(".summary").empty();
+        $(".summary").append($scope.details.summary);
 
-    // $scope.select = function(){
-    //   this.setSelectionRange(0, this.value.length);
-    // }
-    $scope.searchName = "Sherlock Holmes";
+       });
 
-    $scope.search = function(){
-      $scope.$watch('searchName', function() {
-        console.log("clicked");
+      $http.get("http://api.tvmaze.com/search/shows?q=" + $scope.search)
+      .then(function(response){
+        $scope.related = response.data; });
 
-        $http.get("http://www.omdbapi.com/?t=" + $scope.searchName + "&tomatoes=true&plot=full&type=series")
-        .then(function(response){
-          console.log(response.data);
-          $scope.details = response.data;
-         });
-
-        $http.get("http://www.omdbapi.com/?s=" + $scope.searchName)
-        .then(function(response){
-          console.log(response.data);
-          $scope.related = response.data;
-        });
-      })
-      // vm.update = function(show){
-      //   $scope.search = show.Title;
-      // }
     }
+
+    $scope.update = function(show){
+      $scope.search = show.name;
+    };
+
+
+
   }
-  //
-  // function fetch($scope, $http){
-  //     $http.get("http://www.omdbapi.com/?t=" + $scope.search + "&tomatoes=true&plot=full")
-  //     .then(function(response){ $scope.details = response.data; });
-  //
-  //     $http.get("http://www.omdbapi.com/?s=" + $scope.search)
-  //     .then(function(response){ $scope.related = response.data; });
-  //   }
+
+
 
   function showShowCtrl(User, $stateParams, $window, $scope){
     var vm = this;
@@ -150,7 +141,7 @@
 
     var showIndex = User.favoriteShows.findIndex(findShow);
 
-    $scope.delete = function(){
+    vm.delete = function(){
       User.favoriteShows.splice(showIndex, 1);
       User.$update();
       $window.location.replace("/#/shows");
