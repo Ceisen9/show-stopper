@@ -1,41 +1,21 @@
 <!-- <h1>hello</h1> -->
-<div ng-if="!details">
-  Loading results...
-</div>
-
-<div ng-if="details.Response==='True'">
-  <img ng-src="{{ details.Poster=='N/A' ? 'http://placehold.it/150x220&text=N/A' : details.Poster }}" class="thumbnail animated flip movie-poster">
-
-  <span class="span-outer">
-    <a href="http://imdb.com/title/{{ details.imdbID }}" target="_blank">{{ details.Title }}</a>
-  </span>, {{ details.Year }}
-
-  <p><strong>Released on:</strong> {{ details.Released }} ({{ details.Runtime }})</p>
-
-  <p>{{ details.Plot }}</p>
-
-  <p class="outer-p">
-    <div class="inner-p">
-      <span class="label label-primary">Directors :</span> {{ details.Director }}
+<!-- <div ng-if="!details">
+Loading results...
+</div> -->
+<div class="col s9">
+  <div data-ng-if="details">
+    <div class="row">
+      <div class="col s4">
+          <img data-ng-src="{{ details.image.medium =='N/A' ? 'http://placehold.it/150x220&text=N/A' : details.image.medium }}" >
+      </div>
+      <div class="col s8">
+        <div class="row center-align">
+            <h2><a href="{{details.url}}" target="_blank">{{ details.name }}</a></h2>
+        </div>
+        <div class="row">
+          <p class="summary">Based on the bestselling book series A Song of Ice and Fire by George R.R. Martin, this sprawling new HBO drama is set in a world where summers span decades and winters can last a lifetime. From the scheming south and the savage eastern lands, to the frozen north and ancient Wall that protects the realm from the mysterious darkness beyond, the powerful families of the Seven Kingdoms are locked in a battle for the Iron Throne. This is a story of duplicity and treachery, nobility and honor, conquest and triumph. In the "Game of Thrones", you either win or you die.</p>
+        </div>
+      </div>
     </div>
-    <div class="inner-p">
-      <span class="label label-primary">Actors :</span> {{ details.Actors }}
-    </div>
-    <div class="inner-p">
-      <span class="label label-primary">Genre :</span> {{ details.Genre }}
-    </div>
-  </p>
-
-  <p class="outer-p-2">Ratings:<br>
-    <strong>IMDb Rating</strong>: <span class="label label-success">{{ details.imdbRating }}</span><br>
-    <strong>Rotten Tomatoes</strong>: <span class="label label-success">{{ details.tomatoRating }}</span>
-  </p>
-
-  <p class="outer-p-3">
-    <a href="https://www.youtube.com/results?search_query={{ details.Title }}" target="_blank" class="btn btn-default btn-xs btn-info">Watch Trailers!</a>
-  </p>
-</div>
-
-<div ng-if="details.Response==='False'">
-  No results found.
+  </div>
 </div>

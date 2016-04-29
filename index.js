@@ -37,7 +37,13 @@ app.engine(".hbs", hbs({
   defaultLayout: "layout-main"
 }));
 
-// require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+function isLoggedIn(req, res, next) {
+  // if user is authenticated in the session, carry on
+  if (req.isAuthenticated())
+  return next();
+  // if they aren't redirect them to the home page
+  res.redirect('/#/');
+}
 
 // route for home page
 app.get('/', function(req, res) {
@@ -45,15 +51,18 @@ app.get('/', function(req, res) {
   res.render("shows");
 });
 
-app.get("/api/shows", function(req, res){
-  Show.find({}).lean().exec().then(function(shows){
-    res.json(shows);
+app.get("/api/shows", isLoggedIn, function(req, res){
+
+  User.findById(req.session.passport.user).then(function(user){
+    console.log(user);
+    res.json(user);
   });
 });
 
-app.post("/api/shows", function(req, res){
-  Show.create(req.body).then(function(show){
-    res.json(show);
+app.put("/api/shows", function(req, res){
+  console.log(req.body.favoriteShows);
+  User.findByIdAndUpdate(req.session.passport.user, {favoriteShows: req.body.favoriteShows}, {new: true}).then(function(user){
+    res.json(user);
   });
 });
 
@@ -69,12 +78,6 @@ app.delete("/api/shows/:name", function(req, res){
   });
 });
 
-app.put("/api/shows/:name", function(req, res){
-  Show.findOneAndUpdate({name: req.params.name}, req.body.show, {new: true}).then(function(show){
-    res.json(show);
-  });
-});
-
 app.get('/api/profile', isLoggedIn, function(req, res) {
   User.findById(req.session.passport.user).then(function(user){
     // console.log("backend");
@@ -83,9 +86,6 @@ app.get('/api/profile', isLoggedIn, function(req, res) {
   })
 });
 
-// =====================================
-// FACEBOOK ROUTES =====================
-// =====================================
 // route for facebook authentication and login
 app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 
@@ -101,22 +101,6 @@ app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/#/');
 });
-
-
-// app.get("/*", function(req, res){
-//   console.log(req.session);
-//   res.render("shows");
-// });
-
-function isLoggedIn(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/');
-}
 
 app.listen(app.get("port"), function(req, res){
   console.log("hi");

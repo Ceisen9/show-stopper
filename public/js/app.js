@@ -16,10 +16,6 @@
     "$resource",
     User
   ])
-  .factory("Show", [
-    "$resource",
-    Show
-  ])
   .controller("profileCtrl", [
     "User",
     "$state",
@@ -27,7 +23,7 @@
     profileCtrl
   ])
   .controller("showIndexCtrl", [
-    "Show",
+    "User",
     "$state",
     "$window",
     "$http",
@@ -35,9 +31,13 @@
     showIndexCtrl
   ])
   .controller("showShowCtrl", [
-    "Show",
+    "User",
     "$stateParams",
     "$window",
+    "$http",
+    "$scope",
+    "$state",
+    "$resource",
     showShowCtrl
   ]);
 
@@ -69,104 +69,124 @@
     // $urlRouterProvider.otherwise("/");
   }
 
-
+  //User factory
   function User($resource){
-    var User = $resource("/api/users", {}, {
-      'query': {method: 'GET', isArray: false },
-      update: {method: "PUT"}
+    var User = $resource("/api/shows", {}, {
+      update: {method: "PUT"},
     });
-
-    var user = User.query();
+    var user = User.get();
     return user
   }
 
-  function profileCtrl(User, $state, $scope){
-    $scope.user = User;
+  function profileCtrl(User, $state){
+    var vm = this;
+    vm.user = User;
   };
 
-  function Show($resource){
-    var Show = $resource("/api/shows/:name", {}, {
-      update: {method: "PUT"}
-    });
-    Show.all = Show.query();
-    Show.find = function(property, value, callback){
-      Show.all.$promise.then(function(show){
-        Show.all.forEach(function(show){
-          if(show[property]==value) callback(show);
-        });
-      });
-    }
-    return Show;
-  }
-
-
-  function showIndexCtrl(Show, $state, $window, $http, $scope){
+  function showIndexCtrl(User, $state, $window, $http, $scope){
     var vm = this;
-    vm.shows = Show.all;
+
+    vm.user = User.$promise.then(function(){
+      vm.shows = User.favoriteShows;
+      vm.name = User.facebook.name;
+
+    });
+
     vm.addShow = function(){
-      Show.save({"name": vm.newShow}).$promise.then(function(){
-        $window.location.replace("/shows/" + vm.newShow);
-      });
-    }
+      console.log($scope.details);
 
-    // $scope.select = function(){
-    //   this.setSelectionRange(0, this.value.length);
-    // }
-    $scope.searchName = "Sherlock Holmes";
-
-    vm.search = function(){
-      $scope.$watch('searchName', function() {
-        console.log("clicked");
-
-        $http.get("http://www.omdbapi.com/?t=" + $scope.searchName + "&tomatoes=true&plot=full&type=series")
-        .then(function(response){
-          console.log(response.data);
-          $scope.details = response.data;
-         });
-
-        $http.get("http://www.omdbapi.com/?s=" + $scope.searchName)
-        .then(function(response){
-          console.log(response.data);
-          $scope.related = response.data;
+      vm.shows.push({
+        "name": $scope.details.name,
+         api_id: $scope.details.id,
+          details: {
+            image: $scope.details.image.medium,
+            url: $scope.details.url,
+            premiered: $scope.details.premiered,
+            runtime: $scope.details.runtime,
+            network: $scope.details.network.name,
+            schedule: $scope.details.schedule.days.join(", "),
+            genres: $scope.details.genres.join(", "),
+            rating: $scope.details.rating.average
+          }
         });
-      })
-      // vm.update = function(show){
-      //   $scope.search = show.Title;
-      // }
+      User.$update().then(function(){
+        // trigger a new state change
+        // $state.go("index", {}, {reload: true});
+        $window.location.replace("/#/shows/" + $scope.details.name);
+      });
     }
-  }
-  //
-  // function fetch($scope, $http){
-  //     $http.get("http://www.omdbapi.com/?t=" + $scope.search + "&tomatoes=true&plot=full")
-  //     .then(function(response){ $scope.details = response.data; });
-  //
-  //     $http.get("http://www.omdbapi.com/?s=" + $scope.search)
-  //     .then(function(response){ $scope.related = response.data; });
-  //   }
-
-  function showShowCtrl(Show, $stateParams, $window){
-    var vm = this;
-    Show.find("name", $stateParams.name, function(show){
-      vm.show = show;
+    $scope.$watch('search', function() {
+      fetch();
     });
-    vm.update = function(){
-      Show.update({name: $stateParams.name}, {show: vm.show}, function(response) {
-        console.log(response);
-      });
+
+    $scope.search = "Game of Thrones";
+
+    function fetch(){
+      $http.get("http://api.tvmaze.com/singlesearch/shows?q=" + $scope.search)
+      .then(function(response){
+        $scope.details = response.data;
+        $(".summary").empty();
+        $(".summary").append($scope.details.summary);
+
+       });
+
+      $http.get("http://api.tvmaze.com/search/shows?q=" + $scope.search)
+      .then(function(response){
+        $scope.related = response.data; });
     }
+
+    $scope.update = function(show){
+      $scope.search = show.name;
+    };
+
+    $(document).ready(function(){
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
+    });
+  }
+
+  function showShowCtrl(User, $stateParams, $window, $scope, $state, $http, $resource){
+    var vm = this;
+
+    var Episodes = $resource("http://api.tvmaze.com/shows/:id/episodes", {}, {
+      get: {isArray: true },
+    });
+
+    function findShow(show){
+      return show.name === $stateParams.name;
+    };
+    vm.show = User.favoriteShows.find(findShow);
+
+    $scope.episodes  = Episodes.get({id: vm.show.api_id});
+    console.log($scope.episodes);
+
+    var showIndex = User.favoriteShows.findIndex(findShow);
+
     vm.delete = function(){
-      Show.remove({name: vm.show.name}, function(){
-        $window.location.replace("/shows");
+      User.favoriteShows.splice(showIndex, 1);
+      User.$update().then(function(){
+        // trigger a new state change
+        $state.go("show", {}, {reload: true});
       });
+      $window.location.replace("/#/shows");
     }
+    vm.newEpisode = "";
     vm.addEpisode = function(){
       vm.show.episodes.push({"title": vm.newEpisode});
-      vm.update();
-      vm.newEpisode = "";
+      User.$update().then(function(user){
+        // trigger a new state change
+        $state.go("show", {}, {reload: true});
+        vm.newEpisode = "";
+      });
+
     }
     vm.removeEpisode = function($index){
       vm.show.episodes.splice($index, 1);
-      vm.update();
+      User.$update().then(function(user){
+        // trigger a new state change
+        $state.go("show", {}, {reload: true});
+      });
     }
   }
 })();

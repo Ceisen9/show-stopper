@@ -1,31 +1,36 @@
-<h1><a href="/#/shows">Show Stoppr</a></h1>
-<h2><a href="/#/profile">Profile</a></h2>
-<h2> This is the Index Page</h2>
-<h2>Your Followed Shows:</h2>
-<h3>You are following {{indexVM.shows.length}} shows</h3>
-<h4 data-ng-repeat="show in indexVM.shows">
-  <a href="/#/shows/{{show.name}}">{{show.name}}</a>
-</h4>
-
-<div>
-  <input type="string" placeholder="Name of Show" data-ng-model="indexVM.newShow"/>
-  <button data-ng-click="indexVM.addShow()">Add a Show</button>
+<div class="navbar-fixed">
+  <nav>
+    <div class="nav-wrapper">
+      <a href="/#/shows" class="brand-logo">Show Stoppr</a>
+      <ul class="right">
+        <li><a class="waves-effect waves-dark" href="/#/profile">{{indexVM.name}}</a></li>
+        <li><a class="waves-effect waves-dark" href="/#/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
 </div>
 
-<!-- <div>
-  <input type="string" placeholder="Search for a Title" data-ng-model="indexVM.searchKeyword"/>
-  <button data-ng-click="indexVM.search()">Add a Show</button>
-</div> -->
+<ul class="collapsible" data-collapsible="accordion">
+  <li>
+    <div class="collapsible-header">+ Add a new show</div>
+    <div class="collapsible-body valign-center">
+      <!-- <div class= "container"> -->
+        <div>
+          <div class = "row center-align">
+            <span><input type="text" class="lookup validate" ng-model="search" placeholder="Enter full show name" />
+              <button data-ng-if="details" data-ng-click="indexVM.addShow()">Add a Show</button></span>
+            </div>
+            <div class = "row">
+              <div id="main-info" ng-include="'assets/html/partials/main-info.html'"></div>
+              <div id="related-results" ng-include="'assets/html/partials/related-results.html'"></div>
+            </div>
+          </div>
 
-<div class="container-fluid outerdiv">
-
-  <div class="animated zoomInRight">
-    <div class="input-group search-bar">
-       <input type="text" ng-model="searchName" ng-model-options="{ debounce: 800 }" class="form-control" placeholder="Enter full name of Movie or Show" autofocus />
-       <span class="input-group-addon bar-style" data-ng-click="indexVM.search()"><i class="glyphicon glyphicon-search"></i></span>
+        <!-- </div> -->
     </div>
+  </li>
+</ul>
 
-    <div id="main-info" ng-include="'assets/html/partials/main-info.html'" class="col-md-8"></div>
-    <div id="related-results" ng-include="'assets/html/partials/related-results.html'" class="col-md-4 animated bounce related-results"></div>
-  </div>
+<div>
+  <div id="main-info" ng-include="'assets/html/partials/favorite-shows.html'" class="col-md-8"></div>
 </div>
