@@ -1,9 +1,52 @@
+/*
+dark #282c37
+rgb(40,44,55)
+
+gray #9baec8
+rgb(155,174,200)
+
+light gray #d9e1e8
+rgb(217,225,232)
+
+blue #2b90d9
+rgb(43,144,217)
+*/
+
+
 body {
-  background-repeat: repeat !important;
-  background-attachment: fixed;
+  background-image: radial-gradient(center bottom, ellipse cover, #9baec8, #282c37);
+  background-image: -o-radial-gradient(center bottom, ellipse cover, #9baec8, #282c37);
+  background-image: -ms-radial-gradient(center bottom, ellipse cover, #9baec8, #282c37);
+  background-image: -moz-radial-gradient(center bottom, ellipse cover, #9baec8, #282c37);
+  background-image: -webkit-radial-gradient(center bottom, ellipse cover, #9baec8, #282c37);
 }
 
-ul.rel-results {
+nav .nav-wrapper{
+  background-color: #282c37;
+  padding-left: 20px;
+
+}
+
+nav .brand-logo {
+  color: #2b90d9;
+}
+
+.container{
+  height: 93vh;
+}
+
+.welcome{
+  margin: 0 auto;
+  padding: 80px 120px;
+  background-color: rgba(40,44,55, .4);
+  box-shadow: 3px;
+}
+
+.icon{
+  height: 60px;
+}
+
+/*ul.rel-results {
   list-style-type:circle;
 }
 
@@ -76,4 +119,4 @@ ul.rel-results {
 
 .divider:before {
   content: "|";
-}
+}*/
