@@ -1,26 +1,20 @@
-<div class="container">
-
-    <div class="page-header text-center">
-      <h1><span class="fa fa-anchor"></span> Profile Page</h1>
-      <a href="/#/logout" class="btn btn-default btn-sm">Logout</a>
+<div class="navbar-fixed">
+  <nav>
+    <div class="nav-wrapper">
+      <a href="/#/shows" class="brand-logo">Show Stoppr</a>
+      <ul class="right">
+        <li><a class="waves-effect waves-dark" href="/#/profile">{{ profileVM.user.facebook.name }}</a></li>
+        <li><a class="waves-effect waves-dark" href="/#/logout">Logout</a></li>
+      </ul>
     </div>
+  </nav>
+</div>
 
-    <div class="row">
-
-      <!-- FACEBOOK INFORMATION -->
-      <div class="col-sm-6">
-        <div class="well">
-          <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
-
-          <p>
-            <strong>id</strong>: {{ profileVM.user.facebook.id }}<br>
-            <!-- <strong>token</strong>: {{ user.facebook.token }}<br> -->
-            <strong>name</strong>: {{ profileVM.user.facebook.name }}
-          </p>
-
-        </div>
-      </div>
-
-    </div>
-
+<div class="container valign-wrapper">
+  <div class="welcome center-align">
+    <h1 style="color: #2b90d9"> User Info</h1>
+    <p><strong>Facebook ID</strong>: {{ profileVM.user.facebook.id }}</p>
+    <p><strong>Name: </strong>{{ profileVM.user.facebook.name }}</p>
+    </p>
   </div>
+</div>

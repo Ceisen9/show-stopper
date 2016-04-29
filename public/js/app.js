@@ -69,7 +69,6 @@
     // $urlRouterProvider.otherwise("/");
   }
 
-
   //User factory
   function User($resource){
     var User = $resource("/api/shows", {}, {
@@ -89,10 +88,12 @@
 
     vm.user = User.$promise.then(function(){
       vm.shows = User.favoriteShows;
+      vm.name = User.facebook.name;
 
     });
 
     vm.addShow = function(){
+      console.log($scope.details);
 
       vm.shows.push({
         "name": $scope.details.name,
@@ -138,6 +139,11 @@
       $scope.search = show.name;
     };
 
+    $(document).ready(function(){
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
+    });
   }
 
   function showShowCtrl(User, $stateParams, $window, $scope, $state, $http, $resource){
